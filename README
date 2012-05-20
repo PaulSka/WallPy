@@ -1,0 +1,8 @@
+WallPy
+Download wallpaper from http://wallbase.cc
+
+Require :
+	* Python (http://www.python.org/)
+	* easy_instal (http://peak.telecommunity.com/dist/ez_setup.py) / pip
+	* mechanize (http://pypi.python.org/pypi/mechanize/)
+	* BeautifulSoup (http://www.crummy.com/software/BeautifulSoup/)
