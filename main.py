@@ -6,6 +6,7 @@ from BeautifulSoup import BeautifulSoup
 import os
 import time
 import config
+import pickle
 
 #Random seed	
 random.seed()
@@ -22,7 +23,7 @@ mBrowser.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; r
 def fetchWallbase():
 	"""
 	Fetching wallbase.cc
-	Return random link
+	Return links
 	"""
 		
 	#Open Url (##TODO set config for parameter)
@@ -35,10 +36,50 @@ def fetchWallbase():
 	for link in mBrowser.links(url_regex="wallbase.cc/wallpaper/"):
 		links.append(link.url)
 
-	#Random links and get the first element
-	randomUrl = random.sample(links, 1)[0]
+	return links
 
-	return randomUrl
+def getUrl(linksUrl):
+	"""
+	Choose random links in linksUrl
+	Return one Url
+	"""
+
+	def openWallpaperHistory():
+		"""
+		Open Wallpaper History
+                """
+                if not os.path.exists(config.WALLPAPER_HISTORY):
+                        HISTORY = []
+                        pickle.dump(HISTORY, open(config.WALLPAPER_HISTORY, "wb"))
+
+                HISTORY = pickle.load(open(config.WALLPAPER_HISTORY))
+
+		return HISTORY
+
+	def checkWallpaper(wallpaperName, wallpaperHistory):
+		"""
+		Check if wallpaper is allready downloaded
+		"""
+
+		if wallpaperName in wallpaperHistory:
+			return True
+		else:
+			wallpaperHistory.append(wallpaperName)
+			pickle.dump(wallpaperHistory, open(config.WALLPAPER_HISTORY, "wb"))
+			return False
+
+	def randomUrl(linksUrl):
+		"""
+		Random links and get the first element
+		"""
+		randomUrl = random.sample(linksUrl, 1)[0]
+		return randomUrl
+	
+	link = randomUrl(linksUrl)
+	wallpaperHistory = openWallpaperHistory()
+	while checkWallpaper(link, wallpaperHistory):
+		link = randomUrl(linksUrl)
+	return link
 	
 def getWallpaperUrl(randomUrl):
 	"""
@@ -67,9 +108,12 @@ def saveWallpaper(imgUrl):
 	
 while True:
 	print "Fetching wallbase ..."
-	randomUrl = fetchWallbase()
+	links = fetchWallbase()
+	print "Random links"
+	link = getUrl(links)	
 	print "Get source wallpaper ..."
-	imgUrl = getWallpaperUrl(randomUrl)
+	imgUrl = getWallpaperUrl(link)
 	wallpaperName = saveWallpaper(imgUrl)
 	print "Saving %s wallpaper" %wallpaperName
 	time.sleep(config.TIMER)
+

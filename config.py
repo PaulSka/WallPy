@@ -2,6 +2,7 @@
 
 TIMER = 300 #Seconds
 WALLPAPER_PATH = "C:\Users\PaulSka\WallPy\wallpapers" #Path for wallpapers
+WALLPAPER_HISTORY = "C:\Users\PaulSka\WallPy\wallpapers\HISTORY.pkl" #History wallpapers
 
 #WallBase config
 WALLBASE_TYPE = "toplist" #toplist, random, ....
